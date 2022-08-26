@@ -21,6 +21,7 @@ const pt = {
   userNotFound: 'O email informado pode não estar cadastrado',
   shutdown: 'Sair',
   profile: 'Perfil',
+  search: 'Pesquisar',
 };
 
 export default function getStrings() {

@@ -246,8 +246,14 @@ const Home: NextPage = () => {
             <Text>{strings.dontHaveAccount}</Text>
           </div>
         </form>
-        <div
-          style={{ position: 'absolute', right: pixels.p2, top: pixels.p2, cursor: 'pointer' }}
+        <button
+          style={{
+            position: 'absolute',
+            right: pixels.p2,
+            top: pixels.p2,
+            cursor: 'pointer',
+            background: colors.bgLight,
+          }}
           onClick={setThemeMode}
         >
           <Image
@@ -256,7 +262,7 @@ const Home: NextPage = () => {
             height={26}
             alt=""
           />
-        </div>
+        </button>
       </main>
       {loading ? <LoadingPage /> : <div title="loading" />}
       <Alert

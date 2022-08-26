@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import Container from '../components/Container';
 import Header from '../components/Header';
+import Main from '../components/Home/Main';
+import NavMenu from '../components/Home/NavMenu';
 import { GlobalContext } from '../context/global';
 import HomeContextProvider from '../context/home';
 import Firebase from '../firebase/Firebase';
@@ -42,7 +44,14 @@ const Home: NextPage = () => {
       <HomeContextProvider>
         <div>
           <Header signOut={() => auth.signOut()} />
-          <Container minHeight="header">{}</Container>
+          <Container minHeight="header">
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div style={{ width: '100vw', maxWidth: 1250, display: 'flex' }}>
+                <NavMenu />
+                <Main />
+              </div>
+            </div>
+          </Container>
         </div>
       </HomeContextProvider>
     </div>
