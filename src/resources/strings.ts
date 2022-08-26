@@ -19,6 +19,8 @@ const pt = {
   waitAMinute: 'Wait a minute...',
   unexpected: 'Erro inesperado',
   userNotFound: 'O email informado pode não estar cadastrado',
+  shutdown: 'Sair',
+  profile: 'Perfil',
 };
 
 export default function getStrings() {

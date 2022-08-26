@@ -1,4 +1,5 @@
 export type TPixels = {};
+type TWNav = { mobile: string; default: string; max: number };
 
 class Pixels {
   public p0: string;
@@ -11,6 +12,9 @@ class Pixels {
   public r3: string;
   public rM: string;
 
+  public hHeader: number;
+  public wNav: TWNav;
+
   private constructor() {
     this.p0 = '0.5rem';
     this.p1 = '1rem';
@@ -21,6 +25,9 @@ class Pixels {
     this.r2 = '16px';
     this.r3 = '32px';
     this.rM = '100%';
+
+    this.hHeader = 60;
+    this.wNav = { default: '40vw', max: 500, mobile: '60vw' };
   }
 
   public static isMobile(): boolean {

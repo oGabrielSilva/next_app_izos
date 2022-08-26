@@ -13,6 +13,8 @@ const auth = getAuth();
 const { unexpected } = getStrings();
 
 class Firebase {
+  public app = app;
+
   public async loginUser(email: string, password: string) {
     const response: TResponse = {
       user: null,

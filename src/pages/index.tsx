@@ -1,11 +1,14 @@
+import { getAuth } from 'firebase/auth';
 import type { NextPage } from 'next';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
-import { MouseEvent, ChangeEvent } from 'react';
+import { MouseEvent, ChangeEvent, useEffect } from 'react';
 import { useCallback, useContext, useState } from 'react';
 import Alert from '../components/Alert';
 
 import Container from '../components/Container';
+import LoadingPage from '../components/LoadingPage';
 import Text from '../components/Text';
 import Title from '../components/Title';
 import { GlobalContext } from '../context/global';
@@ -18,6 +21,7 @@ const pixels = Pixels.getInstance();
 
 const Home: NextPage = () => {
   const strings = getStrings();
+  const router = useRouter();
   const { colors, isMobile, setThemeMode } = useContext(GlobalContext);
 
   const [email, setEmail] = useState('');
@@ -29,6 +33,8 @@ const Home: NextPage = () => {
   const [alertTitle, setAlertTitle] = useState(strings.waitAMinute);
   const [alertBody, setAlertBody] = useState('');
   const [alertButtonConfirm, setAlertButtonConfirm] = useState(false);
+
+  const [loading, setLoading] = useState(true);
 
   const emailValidation = useCallback(
     (mail: string) => {
@@ -90,10 +96,18 @@ const Home: NextPage = () => {
     setAlertButtonConfirm(false);
   }, [strings]);
 
+  useEffect(() => {
+    getAuth().onAuthStateChanged((user) => {
+      if (!user) setLoading(false);
+      else router.push('/home');
+    });
+  }, [router]);
+
   return (
     <Container>
       <main
         style={{
+          visibility: loading ? 'hidden' : 'visible',
           width: isMobile ? '90vw' : '60vw',
           maxWidth: '900px',
           minHeight: '30vh',
@@ -244,6 +258,7 @@ const Home: NextPage = () => {
           />
         </div>
       </main>
+      {loading ? <LoadingPage /> : <div title="loading" />}
       <Alert
         title={alertTitle}
         isVisible={alertVisible}
