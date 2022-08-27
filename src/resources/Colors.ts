@@ -13,8 +13,8 @@ export type TColors = {
 
 class Colors {
   private light: TColors = {
-    bg: '#e8e8e8',
-    bgLight: '#fcfcfc',
+    bg: '#ced2e0',
+    bgLight: '#ebebeb',
     textTitle: '#0a0a0a',
     textOnVariant: '#fcfcfc',
     text: '#2e2e2e',
@@ -24,8 +24,8 @@ class Colors {
   };
 
   private dark: TColors = {
-    bg: '#0c0e17',
-    bgLight: '#111524',
+    bg: '#12141b',
+    bgLight: '#232838',
     textTitle: '#fcfcfc',
     textOnVariant: '#fcfcfc',
     text: '#bdbdbd',

@@ -25,7 +25,7 @@ const Header = ({ signOut }: THeaderProps) => {
         top: 0,
         left: 0,
         width: '100vw',
-        background: colors.bgLight,
+        background: colors.bg,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -33,7 +33,7 @@ const Header = ({ signOut }: THeaderProps) => {
       }}
     >
       <div>
-        <button style={{ background: colors.bgLight }} onClick={() => setNavOpen(!navOpen)}>
+        <button style={{ background: colors.bg }} onClick={() => setNavOpen(!navOpen)}>
           <Image
             src={colors.mode === 'dark' ? '/images/svg/menu-dark.svg' : '/images/svg/menu.svg'}
             width={35}
@@ -45,7 +45,7 @@ const Header = ({ signOut }: THeaderProps) => {
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <div style={{ marginRight: pixels.p1 }}>
-          <button style={{ background: colors.bgLight }}>
+          <button style={{ background: colors.bg }}>
             <Link href="/profile">
               <Image
                 src={
@@ -61,7 +61,7 @@ const Header = ({ signOut }: THeaderProps) => {
             </Link>
           </button>
         </div>
-        <button onClick={signOut} style={{ background: colors.bgLight }}>
+        <button onClick={signOut} style={{ background: colors.bg }}>
           <Image src="/images/svg/shutdown.svg" width={20} height={20} alt={strings.shutdown} />
         </button>
       </div>

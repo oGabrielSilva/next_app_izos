@@ -27,7 +27,7 @@ class Pixels {
     this.rM = '100%';
 
     this.hHeader = 60;
-    this.wNav = { default: '40vw', max: 500, mobile: '60vw' };
+    this.wNav = { default: '25vw', max: 350, mobile: '70vw' };
   }
 
   public static isMobile(): boolean {

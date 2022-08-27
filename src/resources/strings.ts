@@ -22,6 +22,7 @@ const pt = {
   shutdown: 'Sair',
   profile: 'Perfil',
   search: 'Pesquisar',
+  lore: 'Lore',
 };
 
 export default function getStrings() {
