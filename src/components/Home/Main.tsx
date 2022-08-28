@@ -1,13 +1,32 @@
 import { useContext } from 'react';
+import AddCharacterContextProvider from '../../context/addCharacter';
 import { GlobalContext } from '../../context/global';
-import { HomeContext } from '../../context/home';
+import { HomeContext, NavButtons } from '../../context/home';
+import { TColors } from '../../resources/Colors';
 import Pixels from '../../resources/Pixels';
+import AddCharacter from './AddCharacter';
 import Placeholder from './Placeholder';
+
+type TItemProps = { colors: TColors; navSelected: NavButtons };
 
 const pixels = Pixels.getInstance();
 
+const Item = ({ navSelected, colors }: TItemProps) => {
+  switch (navSelected) {
+    case NavButtons.AddCharacter:
+      return (
+        <AddCharacterContextProvider>
+          <AddCharacter colors={colors} />
+        </AddCharacterContextProvider>
+      );
+
+    default:
+      return <Placeholder />;
+  }
+};
+
 const Main = () => {
-  const { navOpen } = useContext(HomeContext);
+  const { navOpen, navSelected, loading } = useContext(HomeContext);
   const { colors } = useContext(GlobalContext);
 
   return (
@@ -22,7 +41,7 @@ const Main = () => {
         overflow: 'auto',
       }}
     >
-      <Placeholder />
+      {loading ? <Placeholder /> : <Item colors={colors} navSelected={navSelected} />}
     </div>
   );
 };

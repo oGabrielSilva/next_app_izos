@@ -3,7 +3,7 @@ import { GlobalContext } from '../context/global';
 import Pixels from '../resources/Pixels';
 
 type TDivisionTitleProps = {
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 const pixels = Pixels.getInstance();

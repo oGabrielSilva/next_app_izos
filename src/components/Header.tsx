@@ -13,7 +13,7 @@ type THeaderProps = {
 const pixels = Pixels.getInstance();
 
 const Header = ({ signOut }: THeaderProps) => {
-  const { navOpen, setNavOpen } = useContext(HomeContext);
+  const { navOpen, setNavOpen, user } = useContext(HomeContext);
   const strings = getStrings();
   const { colors } = useContext(GlobalContext);
 
@@ -49,7 +49,9 @@ const Header = ({ signOut }: THeaderProps) => {
             <Link href="/profile">
               <Image
                 src={
-                  colors.mode === 'dark'
+                  user && user.photoURL
+                    ? user.photoURL
+                    : colors.mode === 'dark'
                     ? '/images/svg/profile-dark.svg'
                     : '/images/svg/profile.svg'
                 }
