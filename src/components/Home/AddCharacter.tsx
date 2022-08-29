@@ -21,7 +21,6 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
 
   const strings = getStrings();
   const [belowThousand, setBelowThousand] = useState(false);
-
   const [preview, setPreview] = useState<string>('');
 
   const {
@@ -143,7 +142,8 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
             type="text"
             style={{
               background: colors.bg,
-              width: isMobile ? '100%' : '95%',
+              width: '100%',
+              marginLeft: !isMobile ? px.p2 : 0,
               marginTop: px.p1,
               color: colors.text,
             }}
@@ -155,7 +155,8 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
             type="text"
             style={{
               background: colors.bg,
-              width: isMobile ? '100%' : '95%',
+              width: '100%',
+              marginLeft: !isMobile ? px.p2 : 0,
               marginTop: px.p1,
               color: colors.text,
             }}
@@ -208,13 +209,20 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
         style={{
           width: '100%',
           marginTop: px.p1,
-          paddingRight: '2.5%',
           ...(!isMobile
             ? { display: 'grid', gridTemplateColumns: '1fr 1fr' }
             : { display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }),
         }}
       >
-        <label style={{ marginTop: px.p1, display: 'flex', alignItems: 'center' }}>
+        <label
+          style={{
+            justifyContent: 'space-between',
+            width: '100%',
+            marginTop: px.p1,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <Text>{strings.race}</Text>
           <input
             value={personRace}
@@ -231,6 +239,8 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
         </label>
         <label
           style={{
+            justifyContent: 'space-between',
+            width: '100%',
             marginTop: px.p1,
             display: 'flex',
             alignItems: 'center',
