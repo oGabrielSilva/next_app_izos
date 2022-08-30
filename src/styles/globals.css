@@ -26,12 +26,20 @@ body {
   font-size: 14px;
 }
 
-input {
+input,
+textarea {
   border: none;
   outline: none;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   width: 100%;
+}
+
+textarea {
+  resize: vertical;
+  padding: 1rem;
+  height: 230px;
+  transition: none;
 }
 
 button {

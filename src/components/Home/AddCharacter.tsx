@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AddCharacterContext } from '../../context/addCharacter';
 import { GlobalContext } from '../../context/global';
 import { HomeContext } from '../../context/home';
+import CharacterDetail from '../../Model/CharacterDetail';
 import { TColors } from '../../resources/Colors';
 import Pixels from '../../resources/Pixels';
 import getStrings from '../../resources/strings';
@@ -13,7 +14,68 @@ type TAddCharacterProps = {
   colors: TColors;
 };
 
+type TItemDetailProps = {
+  detail: CharacterDetail;
+  colors: TColors;
+  isMobile: boolean;
+  position: number;
+  onChangeDetail: (value: string, key: string, position: number) => void;
+  onChangeValue: (value: string, key: string, position: number) => void;
+  onDelete: (key: string) => void;
+};
+
 const px = Pixels.getInstance();
+
+const ItemDetail = ({
+  colors,
+  detail,
+  isMobile,
+  position,
+  onChangeDetail,
+  onChangeValue,
+  onDelete,
+}: TItemDetailProps) => {
+  return (
+    <label
+      style={{
+        justifyContent: 'flex-start',
+        width: '100%',
+        marginTop: px.p0,
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
+      <div style={{ minWidth: 60 }}>
+        <input
+          type="text"
+          value={detail.getDetail()}
+          style={{ background: colors.bg, width: '90%', color: colors.text }}
+          onChange={({ target }) => onChangeDetail(target.value, detail.getKey(), position)}
+        />
+      </div>
+      <input
+        value={detail.getValue()}
+        type="text"
+        style={{
+          background: colors.bg,
+          width: isMobile ? '60%' : '50%',
+          marginLeft: px.p1,
+          color: colors.text,
+        }}
+        placeholder={detail.getValue()}
+        onChange={({ target }) => onChangeValue(target.value, detail.getKey(), position)}
+      />
+      <button style={{ background: colors.bgLight }} onClick={() => onDelete(detail.getKey())}>
+        <span
+          style={{ color: colors.variant, marginLeft: px.p0 }}
+          className="material-symbols-outlined"
+        >
+          delete
+        </span>
+      </button>
+    </label>
+  );
+};
 
 const AddCharacter = ({ colors }: TAddCharacterProps) => {
   const { navOpen } = useContext(HomeContext);
@@ -27,15 +89,17 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
     personGender,
     personImage,
     personName,
-    personRace,
     personTitle,
-    personAge,
-    setPersonAge,
+    personPresentation,
+    personOrigin,
+    personDetails,
+    setPersonDetails,
+    setPersonOrigin,
     setPersonGender,
     setPersonImage,
     setPersonName,
-    setPersonRace,
     setPersonTitle,
+    setPersonPresentation,
   } = useContext(AddCharacterContext);
 
   useEffect(() => {
@@ -68,7 +132,7 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
         width: '100%',
         background: colors.bgLight,
         borderRadius: px.r1,
-        padding: px.p2,
+        padding: px.p1,
       }}
     >
       <div
@@ -132,8 +196,7 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
           style={{
             width: '100%',
             display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            alignItems: 'flex-end',
             flexDirection: 'column',
           }}
         >
@@ -142,8 +205,7 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
             type="text"
             style={{
               background: colors.bg,
-              width: '100%',
-              marginLeft: !isMobile ? px.p2 : 0,
+              width: belowThousand ? '100%' : '90%',
               marginTop: px.p1,
               color: colors.text,
             }}
@@ -155,8 +217,7 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
             type="text"
             style={{
               background: colors.bg,
-              width: '100%',
-              marginLeft: !isMobile ? px.p2 : 0,
+              width: belowThousand ? '100%' : '90%',
               marginTop: px.p1,
               color: colors.text,
             }}
@@ -169,38 +230,38 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
               display: 'flex',
               justifyContent: 'space-evenly',
               alignItems: 'center',
-              width: '100%',
+              width: belowThousand ? '100%' : '90%',
             }}
           >
             <button onClick={() => setPersonGender('M')} style={{ background: colors.bgLight }}>
-              <span>
+              <div style={{ minWidth: 65 }}>
                 <Text
                   color={personGender === 'M' ? colors.variant : null}
                   bold={personGender === 'M'}
                 >
                   {strings.male}
                 </Text>
-              </span>
+              </div>
             </button>
             <button onClick={() => setPersonGender('F')} style={{ background: colors.bgLight }}>
-              <span>
+              <div style={{ minWidth: 65 }}>
                 <Text
                   color={personGender === 'F' ? colors.variant : null}
                   bold={personGender === 'F'}
                 >
                   {strings.female}
                 </Text>
-              </span>
+              </div>
             </button>
             <button onClick={() => setPersonGender('O')} style={{ background: colors.bgLight }}>
-              <span>
+              <div style={{ minWidth: 65 }}>
                 <Text
                   color={personGender === 'O' ? colors.variant : null}
                   bold={personGender === 'O'}
                 >
                   {strings.other}
                 </Text>
-              </span>
+              </div>
             </button>
           </div>
         </div>
@@ -209,70 +270,95 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
         style={{
           width: '100%',
           marginTop: px.p1,
-          ...(!isMobile
-            ? { display: 'grid', gridTemplateColumns: '1fr 1fr' }
-            : { display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }),
         }}
       >
-        <label
-          style={{
-            justifyContent: 'space-between',
-            width: '100%',
-            marginTop: px.p1,
-            display: 'flex',
-            alignItems: 'center',
+        <div style={{ marginBottom: px.p1, marginTop: px.p1 }}>
+          <Title sub>{strings.details}</Title>
+        </div>
+        {!personDetails.length ? (
+          <div>
+            <Title sub center>
+              {strings.noDetails}
+            </Title>
+          </div>
+        ) : (
+          personDetails.map((detail, index) => (
+            <ItemDetail
+              colors={colors}
+              detail={detail}
+              position={index}
+              isMobile={isMobile}
+              key={detail.getKey()}
+              onChangeDetail={(text: string, key: string, position: number) => {
+                const detail = personDetails.find((value) => value.getKey() === key);
+                if (detail !== undefined) {
+                  const list = personDetails.filter((value) => value.getKey() !== key);
+                  detail.setDetail(text);
+                  const newList = CharacterDetail.insert(list, position, detail);
+                  setPersonDetails([...newList]);
+                }
+              }}
+              onChangeValue={(text: string, key: string, position: number) => {
+                const detail = personDetails.find((value) => value.getKey() === key);
+                if (detail !== undefined) {
+                  const list = personDetails.filter((value) => value.getKey() !== key);
+                  detail.setValue(text);
+                  const newList = CharacterDetail.insert(list, position, detail);
+                  setPersonDetails([...newList]);
+                }
+              }}
+              onDelete={(key: string) => {
+                const newList = personDetails.filter((value) => value.getKey() !== key);
+                setPersonDetails([...newList]);
+              }}
+            />
+          ))
+        )}
+      </div>
+      <div style={{ marginTop: px.p0 }}>
+        <button
+          onClick={() => {
+            setPersonDetails([...personDetails, new CharacterDetail(strings.detail, '')]);
           }}
+          style={{ background: colors.bgLight, padding: px.p0 }}
         >
-          <Text>{strings.race}</Text>
-          <input
-            value={personRace}
-            type="text"
-            style={{
-              background: colors.bg,
-              width: isMobile ? '100%' : '95%',
-              marginLeft: px.p1,
-              color: colors.text,
-            }}
-            placeholder={strings.race}
-            onChange={({ target }) => setPersonRace(target.value)}
-          />
-        </label>
-        <label
-          style={{
-            justifyContent: 'space-between',
-            width: '100%',
-            marginTop: px.p1,
-            display: 'flex',
-            alignItems: 'center',
-            marginLeft: isMobile ? 0 : px.p1,
-          }}
-        >
-          <Text>{strings.age}</Text>
-          <input
-            value={personAge}
-            type="number"
-            style={{
-              background: colors.bg,
-              width: isMobile ? '100%' : '95%',
-              marginLeft: px.p1,
-              color: colors.text,
-            }}
-            placeholder={strings.age}
-            onChange={({ target }) => {
-              if (isNaN(parseFloat(target.value))) setPersonAge(0);
-              else setPersonAge(parseFloat(target.value));
-            }}
-          />
-        </label>
+          <span
+            style={{ fontSize: '1.8rem', color: colors.variant }}
+            className="material-symbols-outlined"
+          >
+            add_circle
+          </span>
+        </button>
       </div>
       <div
         style={{
           width: '100%',
           marginTop: px.p2,
-          paddingRight: '2.5%',
         }}
       >
         <Title sub>{strings.presentation}</Title>
+        <div style={{ width: '100%', marginTop: px.p1, marginRight: '10%' }}>
+          <textarea
+            value={personPresentation}
+            onChange={({ target }) => setPersonPresentation(target.value)}
+            style={{ background: colors.bg, color: colors.text, height: 140 }}
+          />
+        </div>
+      </div>
+      <div
+        style={{
+          width: '100%',
+          marginTop: px.p1,
+        }}
+      >
+        <Title sub>{strings.origin}</Title>
+        <div style={{ width: '100%', marginTop: px.p1, marginRight: '10%' }}>
+          <textarea
+            value={personOrigin}
+            onChange={({ target }) => setPersonOrigin(target.value)}
+            style={{ background: colors.bg, color: colors.text }}
+          />
+        </div>
       </div>
     </div>
   );

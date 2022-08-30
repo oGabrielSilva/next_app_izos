@@ -41,6 +41,11 @@ const pt = {
   other: 'Outro',
   age: 'Idade',
   presentation: 'Apresentação',
+  species: 'Espécie',
+  origin: 'Origem',
+  detail: 'Detalhe',
+  details: 'Detalhes',
+  noDetails: 'Nenhum detalhe para este personagem',
 };
 
 export default function getStrings() {

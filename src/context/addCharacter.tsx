@@ -1,4 +1,8 @@
 import { createContext, ReactNode, useMemo, useState } from 'react';
+import CharacterDetail from '../Model/CharacterDetail';
+import getStrings from '../resources/strings';
+
+const strings = getStrings();
 
 type TAddCharacterProps = {
   children: ReactNode;
@@ -11,14 +15,16 @@ type TAddCharacterContext = {
   personName: string;
   personTitle: string;
   personGender: TGender;
-  personRace: string;
-  personAge: number;
+  personPresentation: string;
+  personOrigin: string;
+  personDetails: CharacterDetail[];
+  setPersonDetails: (value: CharacterDetail[]) => void;
   setPersonImage: (value: Blob | null) => void;
   setPersonName: (value: string) => void;
   setPersonTitle: (value: string) => void;
   setPersonGender: (value: TGender) => void;
-  setPersonRace: (value: string) => void;
-  setPersonAge: (value: number) => void;
+  setPersonPresentation: (value: string) => void;
+  setPersonOrigin: (value: string) => void;
 };
 
 export const AddCharacterContext = createContext<TAddCharacterContext>({} as TAddCharacterContext);
@@ -28,25 +34,40 @@ const AddCharacterContextProvider = ({ children }: TAddCharacterProps) => {
   const [personName, setPersonName] = useState<string>('');
   const [personTitle, setPersonTitle] = useState<string>('');
   const [personGender, setPersonGender] = useState<TGender>('F');
-  const [personRace, setPersonRace] = useState<string>('');
-  const [personAge, setPersonAge] = useState<number>(0);
+  const [personPresentation, setPersonPresentation] = useState<string>('');
+  const [personOrigin, setPersonOrigin] = useState<string>('');
+  const [personDetails, setPersonDetails] = useState<CharacterDetail[]>([
+    new CharacterDetail(strings.species, ''),
+    new CharacterDetail(strings.race, ''),
+    new CharacterDetail(strings.age, ''),
+  ]);
 
   const value = useMemo(
     () => ({
       personImage,
       personName,
       personTitle,
-      personRace,
       personGender,
-      personAge,
-      setPersonAge,
+      personOrigin,
+      personPresentation,
+      personDetails,
+      setPersonDetails,
+      setPersonPresentation,
       setPersonGender,
       setPersonName,
       setPersonImage,
-      setPersonRace,
       setPersonTitle,
+      setPersonOrigin,
     }),
-    [personAge, personGender, personImage, personName, personRace, personTitle]
+    [
+      personDetails,
+      personGender,
+      personImage,
+      personName,
+      personOrigin,
+      personPresentation,
+      personTitle,
+    ]
   );
 
   return <AddCharacterContext.Provider value={value}>{children}</AddCharacterContext.Provider>;
