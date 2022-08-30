@@ -16,7 +16,7 @@ const pt = {
   dontHaveAccount: 'Não possui conta? Cadastre-se.',
   createUserErrorTitle: 'Oops... tivemos um problema ao criar seu usuário',
   loginUserErrorTitle: 'Oops... tivemos um problema ao logar no sistema',
-  waitAMinute: 'Wait a minute...',
+  waitAMinute: 'Aguarde um momento...',
   unexpected: 'Erro inesperado',
   userNotFound: 'O email informado pode não estar cadastrado',
   shutdown: 'Sair',
@@ -46,6 +46,12 @@ const pt = {
   detail: 'Detalhe',
   details: 'Detalhes',
   noDetails: 'Nenhum detalhe para este personagem',
+  history: 'História',
+  save: 'Salvar',
+  draft: 'Rascunho',
+  delete: 'Deletar',
+  personaNameAndImageRequired: 'Nome e imagem da persona é requerido',
+  success: 'Sucesso',
 };
 
 export default function getStrings() {

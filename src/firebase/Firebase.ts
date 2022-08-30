@@ -1,3 +1,4 @@
+import { getStorage, ref, UploadResult, uploadBytes, uploadString } from 'firebase/storage';
 import { signInWithEmailAndPassword, User } from 'firebase/auth';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { FirebaseError, getApp, getApps, initializeApp } from 'firebase/app';
@@ -6,9 +7,15 @@ import Env from '../Env/Env';
 import getStrings from '../resources/strings';
 
 type TResponse = { user: User | null; error: { code: string; message: string } | null };
+type TResponseStorage = {
+  ref: UploadResult | null;
+  error: { code: string; message: string } | null;
+};
 
 const app = getApps().length ? getApp() : initializeApp(Env.firebaseConfig());
 const auth = getAuth();
+
+const storage = getStorage();
 
 const { unexpected } = getStrings();
 
@@ -64,6 +71,23 @@ class Firebase {
       }
     }
   }
+
+  public async uploadImage(file: string, path: string, userUid: string) {
+    const response: TResponseStorage = { error: { code: '', message: '' }, ref: null };
+    try {
+      const storageRef = ref(storage, `images/${path}/${userUid}`);
+      const snapshot = await uploadString(storageRef, file, 'data_url');
+      response.ref = snapshot;
+    } catch (error) {
+      console.log(error);
+      response.error = { code: '400', message: '' };
+    } finally {
+      console.log(response);
+      return response;
+    }
+  }
+
+  public async findUserByUid(uid: string) {}
 }
 
 export default new Firebase();

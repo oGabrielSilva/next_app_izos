@@ -3,85 +3,28 @@ import { useContext, useEffect, useState } from 'react';
 import { AddCharacterContext } from '../../context/addCharacter';
 import { GlobalContext } from '../../context/global';
 import { HomeContext } from '../../context/home';
-import CharacterDetail from '../../Model/CharacterDetail';
+import CharacterData from '../../Model/CharacterData';
 import { TColors } from '../../resources/Colors';
 import Pixels from '../../resources/Pixels';
 import getStrings from '../../resources/strings';
+import Alert from '../Alert';
 import Text from '../Text';
 import Title from '../Title';
+import ItemDetail from './ItemDetail';
+import ItemHistory from './ItemHistory';
 
-type TAddCharacterProps = {
-  colors: TColors;
-};
-
-type TItemDetailProps = {
-  detail: CharacterDetail;
-  colors: TColors;
-  isMobile: boolean;
-  position: number;
-  onChangeDetail: (value: string, key: string, position: number) => void;
-  onChangeValue: (value: string, key: string, position: number) => void;
-  onDelete: (key: string) => void;
-};
+type TAddCharacterProps = { colors: TColors };
 
 const px = Pixels.getInstance();
-
-const ItemDetail = ({
-  colors,
-  detail,
-  isMobile,
-  position,
-  onChangeDetail,
-  onChangeValue,
-  onDelete,
-}: TItemDetailProps) => {
-  return (
-    <label
-      style={{
-        justifyContent: 'flex-start',
-        width: '100%',
-        marginTop: px.p0,
-        display: 'flex',
-        alignItems: 'center',
-      }}
-    >
-      <div style={{ minWidth: 60 }}>
-        <input
-          type="text"
-          value={detail.getDetail()}
-          style={{ background: colors.bg, width: '90%', color: colors.text }}
-          onChange={({ target }) => onChangeDetail(target.value, detail.getKey(), position)}
-        />
-      </div>
-      <input
-        value={detail.getValue()}
-        type="text"
-        style={{
-          background: colors.bg,
-          width: isMobile ? '60%' : '50%',
-          marginLeft: px.p1,
-          color: colors.text,
-        }}
-        placeholder={detail.getValue()}
-        onChange={({ target }) => onChangeValue(target.value, detail.getKey(), position)}
-      />
-      <button style={{ background: colors.bgLight }} onClick={() => onDelete(detail.getKey())}>
-        <span
-          style={{ color: colors.variant, marginLeft: px.p0 }}
-          className="material-symbols-outlined"
-        >
-          delete
-        </span>
-      </button>
-    </label>
-  );
-};
 
 const AddCharacter = ({ colors }: TAddCharacterProps) => {
   const { navOpen } = useContext(HomeContext);
   const { isMobile } = useContext(GlobalContext);
 
   const strings = getStrings();
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertTitle, setAlertTitle] = useState(strings.waitAMinute);
+  const [alertButton, setAlertButton] = useState(false);
   const [belowThousand, setBelowThousand] = useState(false);
   const [preview, setPreview] = useState<string>('');
 
@@ -93,6 +36,8 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
     personPresentation,
     personOrigin,
     personDetails,
+    personHistory,
+    setPersonHistory,
     setPersonDetails,
     setPersonOrigin,
     setPersonGender,
@@ -100,13 +45,14 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
     setPersonName,
     setPersonTitle,
     setPersonPresentation,
+    savePersona,
+    draftPersona,
   } = useContext(AddCharacterContext);
 
   useEffect(() => {
-    if (personImage !== null) {
-      const objectUrl = URL.createObjectURL(personImage!);
+    if (personImage) {
+      const objectUrl = URL.createObjectURL(personImage);
       setPreview(objectUrl);
-
       return () => URL.revokeObjectURL(objectUrl);
     }
   }, [personImage]);
@@ -124,7 +70,7 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
   }, []);
 
   return navOpen && isMobile ? (
-    <div></div>
+    <div />
   ) : (
     <div
       style={{
@@ -135,6 +81,24 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
         padding: px.p1,
       }}
     >
+      <Alert
+        body={alertTitle === strings.waitAMinute ? '' : '...'}
+        onConfirmClick={() => {
+          setAlertTitle(strings.waitAMinute);
+          setAlertButton(false);
+        }}
+        setVisible={() => setAlertVisible(!alertVisible)}
+        title={alertTitle}
+        isVisible={alertVisible}
+        buttonConfirm={alertButton}
+      />
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button style={{ background: colors.bgLight, marginLeft: 'auto' }}>
+          <span style={{ color: colors.variant }} className="material-symbols-outlined">
+            delete
+          </span>
+        </button>
+      </div>
       <div
         style={{
           display: 'flex',
@@ -282,43 +246,28 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
             </Title>
           </div>
         ) : (
-          personDetails.map((detail, index) => (
-            <ItemDetail
-              colors={colors}
-              detail={detail}
-              position={index}
-              isMobile={isMobile}
-              key={detail.getKey()}
-              onChangeDetail={(text: string, key: string, position: number) => {
-                const detail = personDetails.find((value) => value.getKey() === key);
-                if (detail !== undefined) {
-                  const list = personDetails.filter((value) => value.getKey() !== key);
-                  detail.setDetail(text);
-                  const newList = CharacterDetail.insert(list, position, detail);
-                  setPersonDetails([...newList]);
-                }
-              }}
-              onChangeValue={(text: string, key: string, position: number) => {
-                const detail = personDetails.find((value) => value.getKey() === key);
-                if (detail !== undefined) {
-                  const list = personDetails.filter((value) => value.getKey() !== key);
-                  detail.setValue(text);
-                  const newList = CharacterDetail.insert(list, position, detail);
-                  setPersonDetails([...newList]);
-                }
-              }}
-              onDelete={(key: string) => {
-                const newList = personDetails.filter((value) => value.getKey() !== key);
-                setPersonDetails([...newList]);
-              }}
-            />
-          ))
+          personDetails.map((detail, index) => {
+            return (
+              <ItemDetail
+                colors={colors}
+                detail={detail}
+                position={index}
+                isMobile={isMobile}
+                key={detail.getKey()}
+                onChangeDetail={CharacterData.onChangeDetail}
+                onChangeValue={CharacterData.onChangeValue}
+                details={personDetails}
+                set={setPersonDetails}
+                onDelete={CharacterData.onDelete}
+              />
+            );
+          })
         )}
       </div>
       <div style={{ marginTop: px.p0 }}>
         <button
           onClick={() => {
-            setPersonDetails([...personDetails, new CharacterDetail(strings.detail, '')]);
+            setPersonDetails([...personDetails, new CharacterData(strings.detail, '')]);
           }}
           style={{ background: colors.bgLight, padding: px.p0 }}
         >
@@ -359,6 +308,77 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
             style={{ background: colors.bg, color: colors.text }}
           />
         </div>
+      </div>
+      {!personHistory.length ? (
+        <div />
+      ) : (
+        personHistory.map((value, index) => (
+          <ItemHistory
+            details={personHistory}
+            onChangeDetail={CharacterData.onChangeDetail}
+            onChangeValue={CharacterData.onChangeValue}
+            onDelete={CharacterData.onDelete}
+            set={setPersonHistory}
+            colors={colors}
+            history={value}
+            position={index}
+            key={value.getKey()}
+          />
+        ))
+      )}
+      <div style={{ marginTop: px.p0 }}>
+        <button
+          onClick={() => {
+            setPersonHistory([...personHistory, new CharacterData(strings.detail, '')]);
+          }}
+          style={{ background: colors.bgLight, padding: px.p0 }}
+        >
+          <span
+            style={{ fontSize: '1.8rem', color: colors.variant }}
+            className="material-symbols-outlined"
+          >
+            add_circle
+          </span>
+        </button>
+      </div>
+      <div
+        style={{
+          marginTop: px.p2,
+          marginBottom: px.p1,
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+        }}
+      >
+        <button
+          onClick={savePersona}
+          style={{
+            background: colors.variant,
+            margin: '0 ' + px.p1,
+            padding: `${px.p0} ${px.p3}`,
+            borderRadius: px.r1,
+          }}
+        >
+          <Text center color={colors.textOnVariant}>
+            {strings.save}
+          </Text>
+        </button>
+        <button
+          onClick={() => {
+            setAlertVisible(true);
+            draftPersona().then((message) => {
+              setAlertButton(true);
+              setAlertTitle(message);
+            });
+          }}
+          style={{
+            background: colors.bg,
+            margin: '0 ' + px.p1,
+            padding: `${px.p0} ${px.p3}`,
+            borderRadius: px.r1,
+          }}
+        >
+          <Text center>{strings.draft}</Text>
+        </button>
       </div>
     </div>
   );

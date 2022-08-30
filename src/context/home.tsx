@@ -1,6 +1,6 @@
 import { getAuth, User } from 'firebase/auth';
 import { useRouter } from 'next/router';
-import { createContext, ReactNode, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 
 export enum NavButtons {
   Home,
@@ -47,7 +47,7 @@ const HomeContextProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [router, loading]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (window.innerWidth <= 700) setNavOpen(false);
   }, []);
 

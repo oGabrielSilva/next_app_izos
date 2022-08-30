@@ -1,12 +1,4 @@
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import Colors, { TColors } from '../resources/Colors';
 import Pixels from '../resources/Pixels';
 import Constants from '../utils/Constants';
@@ -41,7 +33,7 @@ function GlobalContextProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('resize', resize);
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setColors(Colors.getInstance());
   }, []);
 

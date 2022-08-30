@@ -2,6 +2,7 @@ class Constants {
   private themeId = '@theme_key';
   private themeLightId = 'light';
   private themeDarkId = 'dark';
+  private personaDraftId = '@id_persona_draft';
 
   private constructor() {}
 
@@ -19,6 +20,10 @@ class Constants {
 
   public static getInstance() {
     return new Constants();
+  }
+
+  public getPersonDraftId() {
+    return this.personaDraftId;
   }
 }
 
