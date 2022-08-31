@@ -1,17 +1,8 @@
 import { useRouter } from 'next/router';
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import CharacterData from '../Model/CharacterData';
 import Persona from '../Model/Persona';
 import getStrings from '../resources/strings';
-import Constants from '../utils/Constants';
 import { HomeContext } from './home';
 
 const strings = getStrings();
@@ -63,13 +54,13 @@ const AddCharacterContextProvider = ({ children }: TAddCharacterProps) => {
 
   const getPersona = useCallback(() => {
     const p: Promise<Persona> = new Promise((resolve) => {
-      const im = new FileReader();
-      im.readAsDataURL(personImage!);
+      const image = new FileReader();
+      image.readAsDataURL(personImage!);
       if (user && user.uid) {
-        im.onload = () =>
+        image.onload = () =>
           resolve(
             new Persona(
-              im.result,
+              image.result as string,
               personName,
               personTitle,
               personGender,
@@ -108,12 +99,6 @@ const AddCharacterContextProvider = ({ children }: TAddCharacterProps) => {
       return strings.unexpected;
     }
   }, [getPersona, personImage, personName]);
-
-  useEffect(() => {
-    class Nameeeeeeeeeee {}
-
-    console.log(new Nameeeeeeeeeee().constructor.name);
-  });
 
   const value = useMemo(
     () => ({

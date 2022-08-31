@@ -1,10 +1,12 @@
-import { getStorage, ref, UploadResult, uploadBytes, uploadString } from 'firebase/storage';
+import { getStorage, ref, UploadResult, uploadString } from 'firebase/storage';
 import { signInWithEmailAndPassword, User } from 'firebase/auth';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { FirebaseError, getApp, getApps, initializeApp } from 'firebase/app';
+import { doc, getFirestore, setDoc } from 'firebase/firestore';
 
 import Env from '../Env/Env';
 import getStrings from '../resources/strings';
+import Persona from '../Model/Persona';
 
 type TResponse = { user: User | null; error: { code: string; message: string } | null };
 type TResponseStorage = {
@@ -14,6 +16,7 @@ type TResponseStorage = {
 
 const app = getApps().length ? getApp() : initializeApp(Env.firebaseConfig());
 const auth = getAuth();
+const db = getFirestore(app);
 
 const storage = getStorage();
 
@@ -85,6 +88,10 @@ class Firebase {
       console.log(response);
       return response;
     }
+  }
+
+  public async setDraftPersona(persona: Persona) {
+    await setDoc(doc(db, 'drafts', persona.getUserUid()!, persona.getId()), persona.onlyData());
   }
 
   public async findUserByUid(uid: string) {}

@@ -1,13 +1,13 @@
-import { uuidv4 } from '@firebase/util';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Firebase from '../../../firebase/Firebase';
 import Persona from '../../../Model/Persona';
 
 type Data = {
-  name: string;
+  error: boolean;
+  message: string;
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   if (req.method === 'POST') {
     const json = JSON.parse(req.body);
     const persona = new Persona(
@@ -22,9 +22,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
       json.id,
       json.userUid
     );
-    res.status(200).json({ name: 'John Doe' });
-    Firebase.uploadImage(json.profile, 'test', uuidv4());
-    return;
+    if (!persona.validation() || !Firebase.findUserByUid(persona.getUserUid()!)) {
+      res.status(400).json({ error: true, message: 'Persona validation failed' });
+      return;
+    }
+    await Firebase.setDraftPersona(persona);
+    Firebase.uploadImage(persona.getProfile()!, 'personas', persona.getUserUid()!);
+    res.status(200).json({ error: false, message: 'Persona saves successfully' });
   }
 }
 

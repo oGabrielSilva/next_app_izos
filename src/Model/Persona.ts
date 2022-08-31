@@ -7,7 +7,7 @@ class Persona {
   private readonly userUid: string | null;
 
   constructor(
-    private profile: string | ArrayBuffer | Blob | null,
+    private profile: string | null,
     private name: string,
     private title: string,
     private gender: TGender,
@@ -23,11 +23,11 @@ class Persona {
     this.userUid = userUid || null;
   }
 
-  public getProfile(): string | ArrayBuffer | Blob | null {
+  public getProfile(): string | null {
     return this.profile;
   }
 
-  public setProfile(profile: Blob): void {
+  public setProfile(profile: string): void {
     this.profile = profile;
   }
 
@@ -95,8 +95,13 @@ class Persona {
     return this.userUid;
   }
 
+  public onlyData() {
+    const { name, title, details, gender, history, origin, presentation } = this;
+    return { name, title, details, gender, history, origin, presentation };
+  }
+
   public validation() {
-    return !this.profile
+    return !this.profile || typeof this.profile !== 'string'
       ? false
       : typeof this.name !== 'string'
       ? false
