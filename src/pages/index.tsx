@@ -1,5 +1,6 @@
 import { getAuth } from 'firebase/auth';
 import type { NextPage } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
@@ -18,9 +19,9 @@ import getStrings from '../resources/strings';
 import Validation from '../utils/Validation';
 
 const pixels = Pixels.getInstance();
+const strings = getStrings();
 
 const Home: NextPage = () => {
-  const strings = getStrings();
   const router = useRouter();
   const { colors, isMobile, setThemeMode } = useContext(GlobalContext);
 
@@ -36,17 +37,14 @@ const Home: NextPage = () => {
 
   const [loading, setLoading] = useState(true);
 
-  const emailValidation = useCallback(
-    (mail: string) => {
-      if (!mail.length) setEmailError(strings.emailRequired);
-      else {
-        const isValid = Validation.isEmail(mail);
-        setEmailError(isValid ? '' : strings.emailInvalid);
-        setEmail(isValid ? mail : '');
-      }
-    },
-    [strings]
-  );
+  const emailValidation = useCallback((mail: string) => {
+    if (!mail.length) setEmailError(strings.emailRequired);
+    else {
+      const isValid = Validation.isEmail(mail);
+      setEmailError(isValid ? '' : strings.emailInvalid);
+      setEmail(isValid ? mail : '');
+    }
+  }, []);
 
   const validationForm = useCallback(
     ({ target }: ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +59,7 @@ const Home: NextPage = () => {
         setPassword(pass.length ? '' : target.value);
       }
     },
-    [emailValidation, strings]
+    [emailValidation]
   );
 
   const submitForm = useCallback(
@@ -76,9 +74,6 @@ const Home: NextPage = () => {
               setAlertBody(strings.userNotFound);
               setAlertButtonConfirm(true);
             }
-            if (user && user.email === email) {
-              console.log(user);
-            }
           })
           .catch((error) => {
             if (error && error.message) setAlertBody(error.message);
@@ -87,14 +82,14 @@ const Home: NextPage = () => {
           });
       }
     },
-    [email, password, strings]
+    [email, password]
   );
 
   const onConfirmClickAlert = useCallback(() => {
     setAlertTitle(strings.waitAMinute);
     setAlertBody('');
     setAlertButtonConfirm(false);
-  }, [strings]);
+  }, []);
 
   useEffect(() => {
     getAuth().onAuthStateChanged((user) => {
@@ -105,6 +100,9 @@ const Home: NextPage = () => {
 
   return (
     <Container>
+      <Head>
+        <title>IzanamiOS - {strings.login}</title>
+      </Head>
       <main
         style={{
           visibility: loading ? 'hidden' : 'visible',
@@ -190,6 +188,7 @@ const Home: NextPage = () => {
               }}
             >
               <button
+                type={'submit'}
                 disabled={!(email.length && password.length)}
                 onClick={submitForm}
                 style={{
@@ -235,16 +234,24 @@ const Home: NextPage = () => {
           >
             <Text>{strings.forgotPassword}</Text>
           </div>
-          <div
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              router.push('/signup');
+            }}
             style={{
               cursor: 'pointer',
               display: 'flex',
               justifyContent: 'center',
+              marginLeft: 'auto',
+              marginRight: 'auto',
               marginTop: pixels.p2,
+              background: colors.bgLight,
             }}
           >
             <Text>{strings.dontHaveAccount}</Text>
-          </div>
+          </button>
         </form>
         <button
           style={{

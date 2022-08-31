@@ -19,6 +19,7 @@ const pt = {
   waitAMinute: 'Aguarde um momento...',
   unexpected: 'Erro inesperado',
   userNotFound: 'O email informado pode não estar cadastrado',
+  emailMayBeInvalid: 'O email pode estar inválido',
   shutdown: 'Sair',
   profile: 'Perfil',
   search: 'Pesquisar',
@@ -52,6 +53,14 @@ const pt = {
   delete: 'Deletar',
   personaNameAndImageRequired: 'Nome e imagem da persona é requerido',
   success: 'Sucesso',
+  alreadyHaveAccount: 'Já possui uma conta?',
+  signUp: 'Criar conta',
+  updateProfile: 'Atualizar perfil',
+  firstName: 'Primeiro nome',
+  lastName: 'Sobrenome',
+  username: 'Nome de usuário',
+  nameForUsers: 'Nome para os usuários',
+  birthday: 'Data de nascimento',
 };
 
 export default function getStrings() {

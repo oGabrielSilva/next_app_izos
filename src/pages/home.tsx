@@ -1,12 +1,10 @@
-import type { User } from 'firebase/auth';
 import { getAuth } from 'firebase/auth';
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import Container from '../components/Container';
 import Header from '../components/Header';
 import Main from '../components/Home/Main';
 import NavMenu from '../components/Home/NavMenu';
+import UpdateProfile from '../components/UpdateProfile';
 import HomeContextProvider from '../context/home';
 import Firebase from '../firebase/Firebase';
 
@@ -16,7 +14,8 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <div>
+      <UpdateProfile />
+      {/* <div>
         <HomeContextProvider>
           <div>
             <Header signOut={() => auth.signOut()} />
@@ -30,7 +29,7 @@ const Home: NextPage = () => {
             </Container>
           </div>
         </HomeContextProvider>
-      </div>
+      </div> */}
     </>
   );
 };

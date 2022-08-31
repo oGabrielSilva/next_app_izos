@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import CharacterData from '../Model/CharacterData';
@@ -135,7 +136,14 @@ const AddCharacterContextProvider = ({ children }: TAddCharacterProps) => {
     ]
   );
 
-  return <AddCharacterContext.Provider value={value}>{children}</AddCharacterContext.Provider>;
+  return (
+    <>
+      <Head>
+        <title>IzanamiOS - {strings.character}</title>
+      </Head>
+      <AddCharacterContext.Provider value={value}>{children}</AddCharacterContext.Provider>
+    </>
+  );
 };
 
 export default AddCharacterContextProvider;
