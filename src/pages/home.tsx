@@ -13,24 +13,22 @@ const Home: NextPage = () => {
   const auth = getAuth();
 
   return (
-    <>
-      <UpdateProfile />
-      {/* <div>
-        <HomeContextProvider>
-          <div>
-            <Header signOut={() => auth.signOut()} />
-            <Container minHeight="header">
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <div style={{ width: '100vw', maxWidth: 1250, display: 'flex' }}>
-                  <NavMenu />
-                  <Main />
-                </div>
+    <div>
+      <HomeContextProvider>
+        <UpdateProfile />
+        {/* <div>
+          <Header signOut={() => auth.signOut()} />
+          <Container minHeight="header">
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div style={{ width: '100vw', maxWidth: 1250, display: 'flex' }}>
+                <NavMenu />
+                <Main />
               </div>
-            </Container>
-          </div>
-        </HomeContextProvider>
-      </div> */}
-    </>
+            </div>
+          </Container>
+        </div> */}
+      </HomeContextProvider>
+    </div>
   );
 };
 

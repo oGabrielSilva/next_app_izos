@@ -61,6 +61,9 @@ const pt = {
   username: 'Nome de usuário',
   nameForUsers: 'Nome para os usuários',
   birthday: 'Data de nascimento',
+  usernameInvalid: 'Nome de usuário é requerido',
+  updateProfileValidationError:
+    'Nome, email, data de nascimento e nome de usuário são obrigatórios',
 };
 
 export default function getStrings() {

@@ -37,7 +37,7 @@ const HomeContextProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (loading) {
       getAuth().onAuthStateChanged((user) => {
-        if (user === null) {
+        if (!user) {
           router.push('/');
         } else {
           setUser(user);

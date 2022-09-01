@@ -1,6 +1,6 @@
 import { TGender } from '../context/addCharacter';
 
-class UserDB {
+class User {
   private profile: string;
   private gender: TGender;
   private username: string;
@@ -11,13 +11,13 @@ class UserDB {
 
   constructor(
     private readonly uid: string,
-    profile: string | null,
-    gender: TGender | null,
-    username: TGender | null,
-    name: string | null,
-    lastname: string | null,
-    email: string | null,
-    birthday: Date | null
+    profile?: string | null,
+    gender?: TGender | null,
+    username?: string | null,
+    name?: string | null,
+    lastname?: string | null,
+    email?: string | null,
+    birthday?: Date | null
   ) {
     if (profile) this.profile = profile;
     else this.profile = '';
@@ -100,6 +100,10 @@ class UserDB {
   public setBirthday(birthday: Date) {
     this.birthday = birthday;
   }
+
+  public validation(): boolean {
+    return !!this.username && !!this.name && !!this.email && !!this.birthday;
+  }
 }
 
-export default UserDB;
+export default User;
