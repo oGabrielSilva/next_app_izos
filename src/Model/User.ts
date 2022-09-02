@@ -101,8 +101,20 @@ class User {
     this.birthday = birthday;
   }
 
-  public validation(): boolean {
-    return !!this.username && !!this.name && !!this.email && !!this.birthday;
+  public getStorageDataServer() {
+    return {
+      uid: this.uid,
+      username: this.username,
+      birthday: this.birthday,
+      lastname: this.lastname,
+      gender: this.gender,
+    };
+  }
+
+  public validation(server?: boolean): boolean {
+    return !server
+      ? !!this.username && !!this.name && !!this.email && !!this.birthday
+      : !!this.username && !!this.birthday && !!this.gender;
   }
 }
 

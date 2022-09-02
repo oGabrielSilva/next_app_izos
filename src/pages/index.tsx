@@ -1,11 +1,11 @@
-import { getAuth } from 'firebase/auth';
+import { getAuth, getRedirectResult, signInWithRedirect } from 'firebase/auth';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { MouseEvent, ChangeEvent, useEffect } from 'react';
-import { useCallback, useContext, useState } from 'react';
+import type { ChangeEvent, MouseEvent } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import Alert from '../components/Alert';
 
 import Container from '../components/Container';
@@ -24,6 +24,8 @@ const strings = getStrings();
 const Home: NextPage = () => {
   const router = useRouter();
   const { colors, isMobile, setThemeMode } = useContext(GlobalContext);
+
+  const auth = getAuth();
 
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState<string>(strings.emailRequired);
@@ -83,6 +85,14 @@ const Home: NextPage = () => {
       }
     },
     [email, password]
+  );
+
+  const signInWithGoogle = useCallback(
+    (e: MouseEvent) => {
+      e.preventDefault();
+      signInWithRedirect(auth, Firebase.provider);
+    },
+    [auth]
   );
 
   const onConfirmClickAlert = useCallback(() => {
@@ -204,7 +214,9 @@ const Home: NextPage = () => {
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div
+            <button
+              type={'button'}
+              onClick={signInWithGoogle}
               style={{
                 background: colors.bgLight,
                 cursor: 'pointer',
@@ -222,7 +234,7 @@ const Home: NextPage = () => {
                 alt="Google login"
                 title="Google login"
               />
-            </div>
+            </button>
           </div>
           <div
             style={{
@@ -232,7 +244,9 @@ const Home: NextPage = () => {
               cursor: 'pointer',
             }}
           >
-            <Text>{strings.forgotPassword}</Text>
+            <button onClick={() => {}} type="button" style={{ background: colors.bgLight }}>
+              <Text>{strings.forgotPassword}</Text>
+            </button>
           </div>
           <button
             type="button"

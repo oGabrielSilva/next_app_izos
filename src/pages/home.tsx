@@ -4,7 +4,6 @@ import Container from '../components/Container';
 import Header from '../components/Header';
 import Main from '../components/Home/Main';
 import NavMenu from '../components/Home/NavMenu';
-import UpdateProfile from '../components/UpdateProfile';
 import HomeContextProvider from '../context/home';
 import Firebase from '../firebase/Firebase';
 
@@ -15,8 +14,7 @@ const Home: NextPage = () => {
   return (
     <div>
       <HomeContextProvider>
-        <UpdateProfile />
-        {/* <div>
+        <div>
           <Header signOut={() => auth.signOut()} />
           <Container minHeight="header">
             <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -26,7 +24,7 @@ const Home: NextPage = () => {
               </div>
             </div>
           </Container>
-        </div> */}
+        </div>
       </HomeContextProvider>
     </div>
   );

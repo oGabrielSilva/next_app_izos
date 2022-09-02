@@ -1,12 +1,11 @@
 import { updateProfile } from 'firebase/auth';
 import Head from 'next/head';
 import Image from 'next/image';
+import { User as FirebaseUser } from 'firebase/auth';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { TGender } from '../context/addCharacter';
 import { GlobalContext } from '../context/global';
-import { HomeContext } from '../context/home';
 import User from '../Model/User';
-import { ProfileResponseData } from '../pages/api/uploads/images/profile';
 import Pixels from '../resources/Pixels';
 import getStrings from '../resources/strings';
 import ImageController from '../utils/Image';
@@ -14,15 +13,20 @@ import Alert from './Alert';
 import Container from './Container';
 import Text from './Text';
 import Title from './Title';
+import { useRouter } from 'next/router';
+
+type TUpdateProfileProps = {
+  user: FirebaseUser;
+};
 
 const strings = getStrings();
 const pixels = Pixels.getInstance();
 
-const UpdateProfile = () => {
-  const { user } = useContext(HomeContext);
+const UpdateProfile = ({ user }: TUpdateProfileProps) => {
   const { colors, isMobile } = useContext(GlobalContext);
 
   const profileRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const [gender, setGender] = useState<TGender>('F');
   const [profile, setProfile] = useState<Blob | null>(null);
@@ -38,6 +42,17 @@ const UpdateProfile = () => {
   const [alertButton, setAlertButton] = useState(false);
 
   const [preview, setPreview] = useState<string>('');
+
+  const [userInfosOK, setUserInfosOK] = useState(0);
+
+  const setData = useCallback((data: any) => {
+    if (!!data) {
+      setGender(data.gender || 'F');
+      setUsername(data.username || '');
+      setLastname(data.lastname || '');
+      setDate(data.birthday ? new Date(data.birthday).toISOString().split('T')[0] : '');
+    }
+  }, []);
 
   const submitForm = useCallback(() => {
     setAlertVisible(true);
@@ -86,11 +101,34 @@ const UpdateProfile = () => {
               }
             });
           }
-          fetch('/api/user/profile');
+          fetch('/api/user/profile', {
+            method: 'POST',
+            body: JSON.stringify({
+              user: {
+                uid: userModel.getUid(),
+                gender: userModel.getGender(),
+                username: userModel.getUsername(),
+                lastname: userModel.getLastname(),
+                birthday: userModel.getBirthday(),
+              },
+            }),
+          }).then((res) => {
+            console.log(res);
+            res.json().then((r) => {
+              console.log(r);
+
+              if (r.error) {
+                setAlertBody(strings.updateProfileValidationError);
+                setAlertButton(true);
+                return;
+              }
+              router.push('/');
+            });
+          });
         });
       });
     }
-  }, [date, email, gender, lastName, name, profile, user, username]);
+  }, [date, email, gender, lastName, name, profile, router, user, username]);
 
   useEffect(() => {
     if (profile) {
@@ -99,6 +137,20 @@ const UpdateProfile = () => {
       return () => URL.revokeObjectURL(objectURL);
     }
   }, [profile]);
+
+  useEffect(() => {
+    if (user && user.displayName && userInfosOK === 0) {
+      setName(user.displayName);
+      if (user.photoURL) setPreview(user.photoURL);
+      if (user.email) setEmail(user.email);
+      fetch('/api/user/profile/' + user.uid, { method: 'GET' }).then((data) =>
+        data.json().then((res) => {
+          setData(res.data);
+        })
+      );
+      setUserInfosOK(1);
+    }
+  }, [setData, user, userInfosOK]);
 
   return (
     <div>

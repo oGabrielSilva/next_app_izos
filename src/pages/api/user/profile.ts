@@ -1,26 +1,34 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Firebase from '../../../firebase/Firebase';
+import User from '../../../Model/User';
 
-export type ProfileResponseData = {
+type ProfileUploadResponse = {
   error: boolean;
-  url: string | null;
+  user: User | null;
 };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ProfileResponseData>
+  res: NextApiResponse<ProfileUploadResponse>
 ) {
   if (req.method === 'POST') {
-    const { profile, uid } = JSON.parse(req.body);
-    if (profile && uid) {
-      const response = await Firebase.uploadProfile(profile, 'uploads/images/profile', uid);
-      if (response.error.code === '400') {
-        res.status(200).json({ error: true, url: '' });
-        return;
-      }
-      res.status(200).json({ error: false, url: response.url });
+    const { user } = JSON.parse(req.body);
+    const userModel = new User(
+      user.uid,
+      null,
+      user.gender,
+      user.username,
+      null,
+      user.lastname,
+      null,
+      user.birthday
+    );
+    if (!userModel.validation(true)) {
+      res.status(200).json({ error: true, user: null });
+      return;
     }
-    res.status(200).json({ error: true, url: '' });
+    await Firebase.updateProfile(userModel);
+    res.status(200).json({ error: false, user: userModel });
   }
 }
 

@@ -28,6 +28,8 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
   const [belowThousand, setBelowThousand] = useState(false);
   const [preview, setPreview] = useState<string>('');
 
+  const [gridTemplateColumns, setGridTemplateColumn] = useState('1fr 1fr');
+
   const {
     personGender,
     personImage,
@@ -60,6 +62,7 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
   useEffect(() => {
     const resize = () => {
       setBelowThousand(window.innerWidth <= 1000);
+      setGridTemplateColumn(window.innerWidth <= 430 ? '1fr' : '1fr 1fr');
     };
 
     resize();
@@ -346,12 +349,13 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
           marginTop: px.p2,
           marginBottom: px.p1,
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
+          gridTemplateColumns: gridTemplateColumns,
         }}
       >
         <button
           onClick={savePersona}
           style={{
+            marginTop: px.p1,
             background: colors.variant,
             margin: '0 ' + px.p1,
             padding: `${px.p0} ${px.p3}`,
@@ -371,6 +375,7 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
             });
           }}
           style={{
+            marginTop: px.p1,
             background: colors.bg,
             margin: '0 ' + px.p1,
             padding: `${px.p0} ${px.p3}`,

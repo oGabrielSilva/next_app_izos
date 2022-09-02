@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       json.id,
       json.userUid
     );
-    if (!persona.validation() || !Firebase.findUserByUid(persona.getUserUid()!)) {
+    if (!persona.validation()) {
       res.status(400).json({ error: true, message: 'Persona validation failed' });
       return;
     }
