@@ -244,7 +244,11 @@ const Home: NextPage = () => {
               cursor: 'pointer',
             }}
           >
-            <button onClick={() => {}} type="button" style={{ background: colors.bgLight }}>
+            <button
+              onClick={() => router.push('/password')}
+              type="button"
+              style={{ background: colors.bgLight }}
+            >
               <Text>{strings.forgotPassword}</Text>
             </button>
           </div>

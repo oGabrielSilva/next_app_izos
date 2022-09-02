@@ -85,10 +85,10 @@ class Firebase {
     }
   }
 
-  public async uploadImage(file: string, path: string, userUid: string) {
+  public async uploadImage(file: string, path: string, userUid: string, uid: string) {
     const response: TResponseStorage = { error: { code: '', message: '' }, ref: null };
     try {
-      const storageRef = ref(storage, `images/${path}/${userUid}`);
+      const storageRef = ref(storage, `uploads/images/${path}/${userUid}/${uid}`);
       const snapshot = await uploadString(storageRef, file, 'data_url');
       response.ref = snapshot;
     } catch (error) {
@@ -138,7 +138,7 @@ class Firebase {
   }
 
   public async setDraftPersona(persona: Persona) {
-    await setDoc(doc(db, 'drafts', persona.getUserUid()!, persona.getId()), persona.onlyData());
+    await setDoc(doc(db, 'drafts', persona.getId()!), persona.onlyData());
   }
 }
 

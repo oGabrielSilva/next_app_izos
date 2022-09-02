@@ -96,32 +96,24 @@ class Persona {
   }
 
   public onlyData() {
-    const { name, title, details, gender, history, origin, presentation } = this;
-    return { name, title, details, gender, history, origin, presentation };
+    const { name, title, details, gender, history, origin, presentation, id, userUid } = this;
+    return { name, title, details, gender, history, origin, presentation, id, userUid };
   }
 
-  public validation() {
-    return !this.profile || typeof this.profile !== 'string'
-      ? false
-      : typeof this.name !== 'string'
-      ? false
-      : typeof this.title !== 'string'
-      ? false
-      : !['F', 'M', 'O'].includes(this.gender)
-      ? false
-      : typeof this.presentation !== 'string'
-      ? false
-      : typeof origin !== 'string'
-      ? false
-      : this.details.constructor.name !== 'Array'
-      ? false
-      : this.history.constructor.name !== 'Array'
-      ? false
-      : typeof this.id !== 'string'
-      ? false
-      : typeof this.userUid !== 'string'
-      ? false
-      : true;
+  public isValid() {
+    return (
+      !!this.profile &&
+      !!this.profile &&
+      !!this.name &&
+      !!this.title &&
+      ['F', 'M', 'O'].includes(this.gender) &&
+      !!this.presentation &&
+      !!this.origin &&
+      !!this.details &&
+      !!this.history &&
+      !!this.id &&
+      !!this.userUid
+    );
   }
 }
 

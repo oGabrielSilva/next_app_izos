@@ -4,6 +4,7 @@ import { createContext, ReactNode, useCallback, useContext, useMemo, useState } 
 import CharacterData from '../Model/CharacterData';
 import Persona from '../Model/Persona';
 import getStrings from '../resources/strings';
+import ImageController from '../utils/Image';
 import { HomeContext } from './home';
 
 const strings = getStrings();
@@ -58,21 +59,24 @@ const AddCharacterContextProvider = ({ children }: TAddCharacterProps) => {
       const image = new FileReader();
       image.readAsDataURL(personImage!);
       if (user && user.uid) {
-        image.onload = () =>
-          resolve(
-            new Persona(
-              image.result as string,
-              personName,
-              personTitle,
-              personGender,
-              personPresentation,
-              personOrigin,
-              personDetails,
-              personHistory,
-              null,
-              user.uid
-            )
-          );
+        image.onload = () => {
+          ImageController.resizeBase64(image.result as string, 150).then((result) => {
+            resolve(
+              new Persona(
+                result as string,
+                personName,
+                personTitle,
+                personGender,
+                personPresentation,
+                personOrigin,
+                personDetails,
+                personHistory,
+                null,
+                user.uid
+              )
+            );
+          });
+        };
       } else resolve({} as Persona);
     });
     return p;
@@ -94,7 +98,7 @@ const AddCharacterContextProvider = ({ children }: TAddCharacterProps) => {
     if (!personImage || !personName) return strings.personaNameAndImageRequired;
     try {
       const persona = await getPersona();
-      fetch('/api/upload/images', { method: 'POST', body: JSON.stringify(persona) });
+      fetch('/api/personas/draft', { method: 'POST', body: JSON.stringify(persona) });
       return strings.success;
     } catch (error) {
       return strings.unexpected;
