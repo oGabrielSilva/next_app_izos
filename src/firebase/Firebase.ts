@@ -2,7 +2,7 @@ import { getDownloadURL, getStorage, ref, UploadResult, uploadString } from 'fir
 import { signInWithEmailAndPassword, User } from 'firebase/auth';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { FirebaseError, getApp, getApps, initializeApp } from 'firebase/app';
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { deleteDoc, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import { GoogleAuthProvider } from 'firebase/auth';
 
 import Env from '../Env/Env';
@@ -95,7 +95,6 @@ class Firebase {
       console.log(error);
       response.error = { code: '400', message: '' };
     } finally {
-      console.log(response);
       return response;
     }
   }
@@ -138,7 +137,15 @@ class Firebase {
   }
 
   public async setDraftPersona(persona: Persona) {
-    await setDoc(doc(db, 'drafts', persona.getId()!), persona.onlyData());
+    await setDoc(doc(db, 'drafts', persona.getId()), persona.onlyData());
+  }
+
+  public async savePersona(persona: Persona) {
+    const docRef = doc(db, 'drafts', persona.getId());
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) await deleteDoc(doc(db, 'drafts', persona.getId()));
+
+    await setDoc(doc(db, 'saves', persona.getId()), persona.onlyData());
   }
 }
 

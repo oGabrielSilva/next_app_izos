@@ -10,6 +10,7 @@ type Data = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   if (req.method === 'POST') {
     const json = JSON.parse(req.body);
+    console.log(json);
     const persona = new Persona(
       json.profile,
       json.name,
@@ -26,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       res.status(400).json({ error: true, message: 'Persona validation failed' });
       return;
     }
-    await Firebase.setDraftPersona(persona);
+    await Firebase.savePersona(persona);
     Firebase.uploadImage(persona.getProfile()!, 'personas', persona.getUserUid()!, persona.getId());
     res.status(200).json({ error: false, message: 'Persona saves successfully' });
   }

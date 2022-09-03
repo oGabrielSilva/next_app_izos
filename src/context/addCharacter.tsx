@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import CharacterData from '../Model/CharacterData';
 import Persona from '../Model/Persona';
@@ -32,7 +31,7 @@ type TAddCharacterContext = {
   setPersonGender: (value: TGender) => void;
   setPersonPresentation: (value: string) => void;
   setPersonOrigin: (value: string) => void;
-  savePersona: () => void;
+  savePersona: () => Promise<string>;
   draftPersona: () => Promise<string>;
 };
 
@@ -41,6 +40,7 @@ export const AddCharacterContext = createContext<TAddCharacterContext>({} as TAd
 const AddCharacterContextProvider = ({ children }: TAddCharacterProps) => {
   const { user } = useContext(HomeContext);
 
+  const [personId, setPersonId] = useState('');
   const [personImage, setPersonImage] = useState<Blob | null>(null);
   const [personName, setPersonName] = useState<string>('');
   const [personTitle, setPersonTitle] = useState<string>('');
@@ -71,7 +71,7 @@ const AddCharacterContextProvider = ({ children }: TAddCharacterProps) => {
                 personOrigin,
                 personDetails,
                 personHistory,
-                null,
+                personId,
                 user.uid
               )
             );
@@ -84,6 +84,7 @@ const AddCharacterContextProvider = ({ children }: TAddCharacterProps) => {
     personDetails,
     personGender,
     personHistory,
+    personId,
     personImage,
     personName,
     personOrigin,
@@ -92,13 +93,24 @@ const AddCharacterContextProvider = ({ children }: TAddCharacterProps) => {
     user,
   ]);
 
-  const savePersona = useCallback(() => {}, []);
+  const savePersona = useCallback(async () => {
+    if (!personImage || !personName) return strings.personaNameAndImageRequired;
+    try {
+      const persona = await getPersona();
+      setPersonId(persona.getId());
+      await fetch('/api/personas/save', { method: 'POST', body: JSON.stringify(persona) });
+      return strings.success;
+    } catch (error) {
+      return strings.unexpected;
+    }
+  }, [getPersona, personImage, personName]);
 
   const draftPersona = useCallback(async () => {
     if (!personImage || !personName) return strings.personaNameAndImageRequired;
     try {
       const persona = await getPersona();
-      fetch('/api/personas/draft', { method: 'POST', body: JSON.stringify(persona) });
+      setPersonId(persona.getId());
+      await fetch('/api/personas/draft', { method: 'POST', body: JSON.stringify(persona) });
       return strings.success;
     } catch (error) {
       return strings.unexpected;

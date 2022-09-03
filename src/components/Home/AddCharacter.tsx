@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { AddCharacterContext } from '../../context/addCharacter';
 import { GlobalContext } from '../../context/global';
@@ -18,10 +19,12 @@ type TAddCharacterProps = { colors: TColors };
 const px = Pixels.getInstance();
 
 const AddCharacter = ({ colors }: TAddCharacterProps) => {
+  const router = useRouter();
   const { navOpen } = useContext(HomeContext);
   const { isMobile } = useContext(GlobalContext);
 
   const strings = getStrings();
+  const [uRouter, setURouter] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertTitle, setAlertTitle] = useState(strings.waitAMinute);
   const [alertButton, setAlertButton] = useState(false);
@@ -87,8 +90,10 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
       <Alert
         body={alertTitle === strings.waitAMinute ? '' : '...'}
         onConfirmClick={() => {
-          setAlertTitle(strings.waitAMinute);
-          setAlertButton(false);
+          if (!uRouter) {
+            setAlertTitle(strings.waitAMinute);
+            setAlertButton(false);
+          } else router.push('/');
         }}
         setVisible={() => setAlertVisible(!alertVisible)}
         title={alertTitle}
@@ -353,7 +358,14 @@ const AddCharacter = ({ colors }: TAddCharacterProps) => {
         }}
       >
         <button
-          onClick={savePersona}
+          onClick={() => {
+            setAlertVisible(true);
+            savePersona().then((message) => {
+              setAlertButton(true);
+              setAlertTitle(message);
+              if (message === strings.success) setURouter(true);
+            });
+          }}
           style={{
             marginTop: px.p1,
             background: colors.variant,
